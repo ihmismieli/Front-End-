@@ -1,5 +1,7 @@
 
 function TodoTable(props) {
+    //saadaan propseilla välitettyä todos todotabliin
+    //indexillä saadaan määrättyä mikä todo poistetaan
     return (
         <table>
             <tbody>
@@ -12,6 +14,7 @@ function TodoTable(props) {
                         <tr key={index}>
                             <td>{todo.description}</td>
                             <td>{todo.date}</td>
+                            <td><button onClick={() => props.handleDelete(index)}>Done</button></td>
                         </tr>
                     )
                 }

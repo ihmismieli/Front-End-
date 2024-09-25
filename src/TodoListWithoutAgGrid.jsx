@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { AgGridReact } from 'ag-grid-react';
-import "ag-grid-community/styles/ag-grid.css"; 
-import "ag-grid-community/styles/ag-theme-material.css"; //voi olla quartz, material tai design
+import TodoTable from "./TodoTable";
 function TodoList() {
 
     const [todo, setTodo] = useState({
@@ -12,22 +10,6 @@ function TodoList() {
 
     const [todos, setTodos] = useState([]);
 
-    const [colDefs,setColDefs] = useState([
-        {field: "description", 
-            filter: true, 
-            editable: true,
-            floatingFilter: true
-        },
-        {field: "priority", 
-            cellStyle: params => params.value === "High" ? {color: 'red'} : {color:'black'},
-            filter: true,
-            floatingFilter: true
-        },
-        {field: "date",
-            filter: true,
-            floatingFilter: true
-        }
-    ]);
 
     const handleAdd = () => {
 
@@ -36,9 +18,16 @@ function TodoList() {
         } else {
             setTodos([todo, ...todos]);
             //kun halutaan asettaa arvot tyhjiksi
-            setTodo({description: "", date: "", priority: ""});
+            setTodo({ description: "", date: "", priority: "" });
         }
 
+    }
+
+    const handleDelete = (row) => {
+        //filtteri iteroi läpi funktion, palauttaa boolean arvon, jos se on false niin se ei palauta sitä arvoa ja poistaa sen listasta
+        //asetetaan todos.filter(todo, index) setTodos, jotta saadaan tietty todo poistettua ja loput näytettyä
+        //jos elementin index on eri kuin row, se säilytetään
+        setTodos(todos.filter((todo, index) => index != row));
     }
 
     return (
@@ -50,7 +39,7 @@ function TodoList() {
                 value={todo.description}
                 onChange={event => setTodo({ ...todo, description: event.target.value })}
             />
-             <input
+            <input
                 type="text"
                 placeholder="Priority"
                 value={todo.priority}
@@ -63,15 +52,11 @@ function TodoList() {
                 onChange={event => setTodo({ ...todo, date: event.target.value })}
             />
             <button onClick={handleAdd}>Add Todo</button>
-            <div className="ag-theme-material" 
-                style={{height: 500, width: "100%"}}>
-                <AgGridReact
-                    rowData ={todos}
-                    columnDefs={colDefs}
-                />
-            </div>
+
+            <TodoTable handleDelete={handleDelete} todos={todos} />
         </>
     );
 }
 
 export default TodoList;
+
