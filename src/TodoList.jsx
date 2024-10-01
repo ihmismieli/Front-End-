@@ -88,12 +88,7 @@ function TodoList() {
                         label="Date"
                         value={todo.date}
                         onChange={handleDate}
-                        textField ={
-                            <TextField
-                            label="Date"
-                            value={todo.date}
-                            />
-                        }
+                        renderInput={(params) => <TextField {...params} />}
                     />
                 </LocalizationProvider>
                 <Button variant="contained" onClick={handleAdd}>Add Todo</Button>
