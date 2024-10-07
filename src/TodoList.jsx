@@ -9,13 +9,19 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
+
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 
 function TodoList() {
 
     const [todo, setTodo] = useState({
         description: "",
-        date: null,
+        date: dayjs(Date.now()),
         priority: ""
     });
 
@@ -41,7 +47,7 @@ function TodoList() {
             field: "date",
             filter: true,
             floatingFilter: true,
-            valueFormatter: (params) => params.value ? params.value.format('DD/MM/YYYY') : ''
+            valueFormatter: (params) => params.value ? params.value.format("DD/MM/YYYY") : ""
         }
     ]);
 
@@ -61,12 +67,8 @@ function TodoList() {
         } else {
             setTodos([todo, ...todos]);
             //kun halutaan asettaa arvot tyhjiksi
-            setTodo({ description: "", date: null, priority: "" });
+            setTodo({ description: "", date: dayjs(Date.now()), priority: "" });
         }
-    }
-
-    const handleDate = (date) => {
-        setTodo({...todo, date: date});
     }
 
     return (
@@ -78,17 +80,30 @@ function TodoList() {
                     value={todo.description}
                     onChange={event => setTodo({ ...todo, description: event.target.value })}
                 />
-                <TextField
+                <FormControl sx={{ minWidth: 120 }}>
+                    <InputLabel id="priority">Priority</InputLabel>
+                    <Select
+                        labelId="priority"
+                        value={todo.priority}
+                        label="Priority"
+                        onChange={event => setTodo({ ...todo, priority: event.target.value })}
+                    >
+                        <MenuItem value={"Low"}>Low</MenuItem>
+                        <MenuItem value={"Medium"}>Medium</MenuItem>
+                        <MenuItem value={"High"}>High</MenuItem>
+                    </Select>
+                </FormControl>
+                {/* <TextField
                     label="Priority"
                     value={todo.priority}
                     onChange={event => setTodo({ ...todo, priority: event.target.value })}
-                />
+                /> */}
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                         label="Date"
-                        value={todo.date}
-                        onChange={handleDate}
-                        renderInput={(params) => <TextField {...params} />}
+                        defaultValue={dayjs(Date.now())}
+                        value={dayjs(todo.date)}
+                        onChange={(newValue) => setTodo({ ...todo, date: newValue })}
                     />
                 </LocalizationProvider>
                 <Button variant="contained" onClick={handleAdd}>Add Todo</Button>
